@@ -47,9 +47,9 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Compute version string
+      - name: Compute package version string
         shell: bash
-        run: echo "VERSION=${GITHUB_REF_NAME//\//-}" >> $GITHUB_ENV
+        run: echo "PKG_VERSION=${GITHUB_REF_NAME//\//-}" >> $GITHUB_ENV
 
       - name: Publish VRCFaceTracking
         run: dotnet publish VRCFaceTracking/VRCFaceTracking.csproj -c Release -r ${{ matrix.rid }} --self-contained true -o publish
@@ -66,17 +66,17 @@ jobs:
       - name: Package (zip)
         if: matrix.package == 'zip'
         shell: pwsh
-        run: Compress-Archive -Path publish/* -DestinationPath "VRCFaceTracking-${{ env.VERSION }}-${{ matrix.rid }}.zip"
+        run: Compress-Archive -Path publish/* -DestinationPath "VRCFaceTracking-${{ env.PKG_VERSION }}-${{ matrix.rid }}.zip"
 
       - name: Package (tar.gz)
         if: matrix.package == 'targz'
         shell: bash
-        run: tar -czf "VRCFaceTracking-${{ env.VERSION }}-${{ matrix.rid }}.tar.gz" -C publish .
+        run: tar -czf "VRCFaceTracking-${{ env.PKG_VERSION }}-${{ matrix.rid }}.tar.gz" -C publish .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: VRCFaceTracking-${{ env.VERSION }}-${{ matrix.rid }}
+          name: VRCFaceTracking-${{ env.PKG_VERSION }}-${{ matrix.rid }}
           path: VRCFaceTracking-*
           if-no-files-found: error
           retention-days: 14
