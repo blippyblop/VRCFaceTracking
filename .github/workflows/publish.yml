@@ -72,7 +72,7 @@ jobs:
           echo "Publishing to Steam branch: $BRANCH"
 
       - name: Deploy to Steam
-        if: github.event_name == 'push'
+        if: github.repository == 'benaclejames/VRCFaceTracking' && github.event_name == 'push'
         env:
           steam_username: ${{ secrets.STEAM_USERNAME }}
           steam_config_vdf: ${{ secrets.STEAM_CONFIG_VDF }}
