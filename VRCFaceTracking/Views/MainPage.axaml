@@ -120,6 +120,46 @@
                     </StackPanel>
                 </Grid>
             </Border>
+            <TextBlock FontSize="13" FontWeight="SemiBold" Opacity="0.6" Text="Output" Margin="0,8,0,0" />
+            <Border CornerRadius="6" BorderThickness="1" Padding="16,12" Background="{DynamicResource ControlFillColorDefaultBrush}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+                        <ui:SymbolIcon Symbol="Camera" FontSize="24" VerticalAlignment="Center" />
+                        <StackPanel Spacing="3" VerticalAlignment="Center">
+                            <TextBlock FontWeight="SemiBold" FontSize="14" Text="Native VRChat Face Tracking" />
+                            <TextBlock FontSize="12" Opacity="0.7" MaxWidth="460" HorizontalAlignment="Left" TextWrapping="Wrap"
+                                       Text="Streams all tracking data as a single OSC blob to /tracking/face/v1, VRChat's native face tracking input. When disabled, individual avatar parameters are sent instead, and native mode is enabled automatically when the current avatar reports support."
+                                       ToolTip.Tip="Compatible with VRChat's native OSC face tracking system. Requires an avatar configured for face tracking with 'Use All Tracking Keys' enabled." />
+                            <StackPanel Orientation="Horizontal" Spacing="6"
+                                        IsVisible="{Binding ParameterOutputService.AvatarInfo.FullFaceTracking, Mode=OneWay}">
+                                <Ellipse Width="8" Height="8" Fill="#4CC38A" VerticalAlignment="Center" />
+                                <TextBlock FontSize="12" Opacity="0.7" VerticalAlignment="Center"
+                                           Text="Avatar reports native face tracking support" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="6"
+                                        IsVisible="{Binding !ParameterOutputService.AvatarInfo.FullFaceTracking, Mode=OneWay}">
+                                <Ellipse Width="8" Height="8" Fill="#FFC107" VerticalAlignment="Center" />
+                                <TextBlock FontSize="12" Opacity="0.7" VerticalAlignment="Center"
+                                           Text="Avatar native face tracking support not detected" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <ToggleSwitch
+                        Grid.Column="2"
+                        IsChecked="{Binding OscTarget.UseNativeFaceTracking, Mode=TwoWay}"
+                        OffContent=""
+                        OnContent=""
+                        VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
             <Border CornerRadius="6" BorderThickness="1" Padding="16,14" Background="{DynamicResource ControlFillColorDefaultBrush}">
                 <Grid>
                     <Grid.ColumnDefinitions>

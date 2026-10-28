@@ -36,7 +36,7 @@ public class NativeParameter<T> : AlwaysRelevantParameter<T> where T : struct
         
     public override Parameter[] ResetParam(IParameterDefinition[] newParams, IAvatarInfo avatarInfo)
     {
-        if (!avatarInfo.FullFaceTracking && _condition.Invoke(newParams))
+        if (!avatarInfo.FullFaceTracking && !ParameterSenderService.NativeVrcMode && _condition.Invoke(newParams))
         {
             return base.ResetParam(newParams, avatarInfo);
         }

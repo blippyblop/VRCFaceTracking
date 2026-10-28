@@ -20,6 +20,15 @@ public class ParameterSenderService
     {
         get; set;
     }
+
+    /// <summary>
+    /// When true, all individual avatar parameters are suppressed and face data is instead streamed
+    /// as a single 102-key binary blob to /tracking/face/v1 (VRChat's native face tracking input).
+    /// </summary>
+    public static bool NativeVrcMode
+    {
+        get; set;
+    }
     public bool AllParametersRelevant
     {
         get => AllParametersRelevantStatic;

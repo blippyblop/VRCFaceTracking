@@ -34,6 +34,14 @@ public partial class OscQueryService(
 
         recvService.OnMessageReceived = HandleNewMessage;
 
+        // Re-evaluate the output stream whenever the native VRC output mode is toggled
+        oscTarget.PropertyChanged += (_, args) =>
+        {
+            if (args.PropertyName is not nameof(IOscTarget.UseNativeFaceTracking)) return;
+
+            ApplyNativeFaceTrackingMode(oscTarget.UseNativeFaceTracking);
+        };
+
         await settingsService.Load(oscTarget);
 
         (bool listenerSuccess, bool senderSuccess) result = (false, false);
@@ -106,6 +114,33 @@ public partial class OscQueryService(
     }
 
     private void HandleNewAvatarWrapper() => HandleNewAvatar(); // Helper func used in callbacks
+
+    /// <summary>
+    /// Called when the user toggles the "Native VRC" output mode from the home menu.
+    /// Updates the global mode flag, then re-evaluates parameter relevancy against the last parsed
+    /// avatar definition so the output stream switches between individual avatar parameters and the
+    /// single 102-key /tracking/face/v1 blob without requiring an avatar change.
+    /// </summary>
+    private void ApplyNativeFaceTrackingMode(bool enabled)
+    {
+        logger.LogDebug("Native VRC output mode {0}. Re-evaluating output parameters.", enabled ? "enabled" : "disabled");
+
+        ParameterSenderService.NativeVrcMode = enabled;
+        ParameterSenderService.Clear();
+
+        var avatarInfo = AvatarInfo;
+        if (avatarInfo is NullAvatarDef || avatarInfo.Parameters == null)
+        {
+            // No avatar definition parsed yet. Relevancy will be applied on the next avatar parse.
+            return;
+        }
+
+        var relevantParameters = UnifiedTracking.AllParameters
+            .SelectMany(parameter => parameter.ResetParam(avatarInfo.Parameters, avatarInfo))
+            .ToList();
+
+        AvatarParameters = relevantParameters;
+    }
     
 
     private void HandleNewMessage(OscMessage msg)
