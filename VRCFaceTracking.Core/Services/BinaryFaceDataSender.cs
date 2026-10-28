@@ -1,27 +1,40 @@
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using VRCFaceTracking.Core.Contracts;
 using VRCFaceTracking.Core.OSC;
 using VRCFaceTracking.Core.Params;
 using VRCFaceTracking.Core.Params.Data;
 
 namespace VRCFaceTracking.Core.Services;
 
-public class BinaryFaceDataSender(OscQueryService oscqService) : IHostedService
+public class BinaryFaceDataSender(
+    ILogger<BinaryFaceDataSender> logger,
+    OscQueryService oscqService,
+    IOscTarget oscTarget) : IHostedService
 {
+    private const string OscMessageBlobAddress = "/tracking/face/v1";
+
     private byte[] _blobBuffer = new byte[UnifiedTrackingData.SerializedLength];
     private OscMessage? _blobMessage;
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _blobMessage = OscMessage.CreateBlob("/tracking/face/v1", _blobBuffer, _blobBuffer.Length);
-        
-        UnifiedTracking.OnUnifiedDataUpdated += OnDataUpdated;
+        _blobMessage = OscMessage.CreateBlob(OscMessageBlobAddress, _blobBuffer, _blobBuffer.Length);
+
         oscqService.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName != nameof(OscQueryService.AvatarInfo)) return;
-            
-            var avatarInfo = (sender as OscQueryService)!.AvatarInfo;
-            SubscribeConditional(avatarInfo.FullFaceTracking);
+
+            EvaluateSubscription();
         };
+        oscTarget.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName != nameof(IOscTarget.UseNativeFaceTracking)) return;
+
+            EvaluateSubscription();
+        };
+
+        EvaluateSubscription();
         return Task.CompletedTask;
     }
 
@@ -31,20 +44,30 @@ public class BinaryFaceDataSender(OscQueryService oscqService) : IHostedService
         return Task.CompletedTask;
     }
 
-    private void SubscribeConditional(bool shouldBeSubscribed)
+    // Native face data is streamed whenever the avatar advertises full face tracking support via OSCQuery,
+    // or whenever the user has forced "Native VRC" mode on from the home menu.
+    private bool NativeModeActive => oscTarget.UseNativeFaceTracking || oscqService.AvatarInfo.FullFaceTracking;
+
+    private void EvaluateSubscription()
     {
         var isAlreadySubscribed = UnifiedTracking.OnUnifiedDataUpdated.GetInvocationList().Any(x => x.Target == this);
-        
+        var shouldBeSubscribed = NativeModeActive;
+
         if (shouldBeSubscribed && !isAlreadySubscribed)
         {
+            logger.LogInformation(
+                "Native face data stream ({0}) engaged: {1}",
+                OscMessageBlobAddress,
+                oscTarget.UseNativeFaceTracking ? "enabled manually from home menu" : "avatar reports full face tracking support");
             UnifiedTracking.OnUnifiedDataUpdated += OnDataUpdated;
         }
         else if (!shouldBeSubscribed && isAlreadySubscribed)
         {
+            logger.LogInformation("Native face data stream ({0}) disengaged.", OscMessageBlobAddress);
             UnifiedTracking.OnUnifiedDataUpdated -= OnDataUpdated;
         }
     }
-    
+
     private void OnDataUpdated(UnifiedTrackingData data)
     {
         if (_blobMessage == null) return;

@@ -25,6 +25,10 @@ public partial class OscTarget : ObservableValidator, IOscTarget
     [property: SavedSetting("OSCAddress", "127.0.0.1")]
     private string _destinationAddress;
 
+    [ObservableProperty]
+    [property: SavedSetting("UseNativeFaceTracking", false)]
+    private bool _useNativeFaceTracking;
+
     public OscTarget(ILocalSettingsService localSettingsService)
     {
         PropertyChanged += (_, _) => localSettingsService.Save(this);

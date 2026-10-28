@@ -27,4 +27,14 @@ public interface IOscTarget : INotifyPropertyChanged
         get;
         set;
     }
+
+    /// <summary>
+    /// When true, VRCFaceTracking streams all face data as a single 102-key blob to /tracking/face/v1
+    /// (VRChat's native face tracking OSC input), instead of individual avatar parameters.
+    /// </summary>
+    public bool UseNativeFaceTracking
+    {
+        get;
+        set;
+    }
 }

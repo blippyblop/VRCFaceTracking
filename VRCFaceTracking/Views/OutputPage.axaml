@@ -8,7 +8,7 @@
     x:DataType="vm:OutputViewModel"
     x:Class="VRCFaceTracking.Views.OutputPage">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
 
         <Border Grid.Row="0" CornerRadius="6" BorderThickness="1" Padding="8,6" Margin="0,0,0,10">
             <StackPanel Orientation="Horizontal" Spacing="4">
@@ -23,7 +23,31 @@
             </StackPanel>
         </Border>
 
-        <Border Grid.Row="1" CornerRadius="6" BorderThickness="1" Padding="4"
+        <Expander Grid.Row="1" Header="Native Face Data (/tracking/face/v1) - live preview" Margin="0,0,0,10">
+            <StackPanel Spacing="8" Margin="4">
+                <TextBlock Text="{Binding NativeStatus}" FontSize="12" Opacity="0.8" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding EyeSummary}" FontFamily="Cascadia Mono, Consolas, Courier New, monospace" FontSize="13" />
+                <TextBlock Text="{Binding DiagnosticHint}" FontSize="12" Foreground="#FFC107" TextWrapping="Wrap"
+                           IsVisible="{Binding DiagnosticHint, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                <ItemsControl ItemsSource="{Binding BlobCells}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:BlobCell">
+                            <Border Width="13" Height="13" Margin="1" CornerRadius="2"
+                                    Background="{Binding Brush}" ToolTip.Tip="{Binding Tooltip}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock FontSize="11" Opacity="0.5" TextWrapping="Wrap"
+                           Text="Each cell is one tracking key in VRChat's payload order (hover for name and value). Cells #0-7 are eye look - hover them while moving your eyes. #8-9 are eye closed. #14+ are face expressions. Cells are what would be put on the wire for /tracking/face/v1." />
+            </StackPanel>
+        </Expander>
+
+        <Border Grid.Row="2" CornerRadius="6" BorderThickness="1" Padding="4"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <ListBox x:Name="LogItems"
                      ItemsSource="{Binding Logs}"

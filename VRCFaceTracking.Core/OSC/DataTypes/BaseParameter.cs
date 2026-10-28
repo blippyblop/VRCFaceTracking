@@ -86,7 +86,7 @@ public class BaseParam<T> : Parameter, IDisposable where T : struct
 
     public override Parameter[] ResetParam(IParameterDefinition[] newParams, IAvatarInfo avatarInfo)
     {
-        if (avatarInfo.FullFaceTracking)
+        if (avatarInfo.FullFaceTracking || ParameterSenderService.NativeVrcMode)
         {
             Relevant = false;
             OscMessage.Address = DefaultPrefix + _paramName;
