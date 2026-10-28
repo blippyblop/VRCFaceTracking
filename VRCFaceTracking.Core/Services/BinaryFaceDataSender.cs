@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using VRCFaceTracking.Core.Contracts;
 using VRCFaceTracking.Core.OSC;
 using VRCFaceTracking.Core.Params;
@@ -6,14 +7,19 @@ using VRCFaceTracking.Core.Params.Data;
 
 namespace VRCFaceTracking.Core.Services;
 
-public class BinaryFaceDataSender(OscQueryService oscqService, IOscTarget oscTarget) : IHostedService
+public class BinaryFaceDataSender(
+    ILogger<BinaryFaceDataSender> logger,
+    OscQueryService oscqService,
+    IOscTarget oscTarget) : IHostedService
 {
+    private const string OscMessageBlobAddress = "/tracking/face/v1";
+
     private byte[] _blobBuffer = new byte[UnifiedTrackingData.SerializedLength];
     private OscMessage? _blobMessage;
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _blobMessage = OscMessage.CreateBlob("/tracking/face/v1", _blobBuffer, _blobBuffer.Length);
+        _blobMessage = OscMessage.CreateBlob(OscMessageBlobAddress, _blobBuffer, _blobBuffer.Length);
 
         oscqService.PropertyChanged += (sender, args) =>
         {
@@ -49,10 +55,15 @@ public class BinaryFaceDataSender(OscQueryService oscqService, IOscTarget oscTar
 
         if (shouldBeSubscribed && !isAlreadySubscribed)
         {
+            logger.LogInformation(
+                "Native face data stream ({0}) engaged: {1}",
+                OscMessageBlobAddress,
+                oscTarget.UseNativeFaceTracking ? "enabled manually from home menu" : "avatar reports full face tracking support");
             UnifiedTracking.OnUnifiedDataUpdated += OnDataUpdated;
         }
         else if (!shouldBeSubscribed && isAlreadySubscribed)
         {
+            logger.LogInformation("Native face data stream ({0}) disengaged.", OscMessageBlobAddress);
             UnifiedTracking.OnUnifiedDataUpdated -= OnDataUpdated;
         }
     }

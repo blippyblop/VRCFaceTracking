@@ -429,20 +429,20 @@ namespace VRCFaceTracking.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Local Test Avatar Detected.
-        /// </summary>
-        public static string LocalTestAvatar_Text {
-            get {
-                return ResourceManager.GetString("LocalTestAvatar_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Local Test Avatars are not supported and will cause issues.
         /// </summary>
         public static string LocalTestAvatarTooltip_Content {
             get {
                 return ResourceManager.GetString("LocalTestAvatarTooltip_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local Test Avatar Detected.
+        /// </summary>
+        public static string LocalTestAvatar_Text {
+            get {
+                return ResourceManager.GetString("LocalTestAvatar_Text", resourceCulture);
             }
         }
         
@@ -519,24 +519,6 @@ namespace VRCFaceTracking.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We noticed your OSC was turned off in VRChat, we&apos;ve just enabled it for you. If the game was open when this happened, you may need to manually enable it from your raidal menu. If not, you should be good to go!.
-        /// </summary>
-        public static string osc_was_disabled_warning_Description {
-            get {
-                return ResourceManager.GetString("osc_was_disabled_warning_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OSC Settings Modified.
-        /// </summary>
-        public static string osc_was_disabled_warning_Title {
-            get {
-                return ResourceManager.GetString("osc_was_disabled_warning_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Where should OSC Data be sent?.
         /// </summary>
         public static string OscSettings_Description {
@@ -560,6 +542,24 @@ namespace VRCFaceTracking.Strings {
         public static string OSCStatus_Text {
             get {
                 return ResourceManager.GetString("OSCStatus_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We noticed your OSC was turned off in VRChat, we&apos;ve just enabled it for you. If the game was open when this happened, you may need to manually enable it from your raidal menu. If not, you should be good to go!.
+        /// </summary>
+        public static string osc_was_disabled_warning_Description {
+            get {
+                return ResourceManager.GetString("osc_was_disabled_warning_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OSC Settings Modified.
+        /// </summary>
+        public static string osc_was_disabled_warning_Title {
+            get {
+                return ResourceManager.GetString("osc_was_disabled_warning_Title", resourceCulture);
             }
         }
         
@@ -672,11 +672,20 @@ namespace VRCFaceTracking.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VRChat OSC App to allow AV3 Avatars to interact with eye and lip tracking runtimes.
+        ///   Looks up a localized string similar to Privacy Statement.
         /// </summary>
-        public static string Settings_About_Text {
+        public static string SettingsPage_PrivacyTermsLink_Content {
             get {
-                return ResourceManager.GetString("Settings_About_Text", resourceCulture);
+                return ResourceManager.GetString("SettingsPage_PrivacyTermsLink_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://github.com/benaclejames/VRCFaceTracking.
+        /// </summary>
+        public static string SettingsPage_PrivacyTermsLink_NavigateUri {
+            get {
+                return ResourceManager.GetString("SettingsPage_PrivacyTermsLink_NavigateUri", resourceCulture);
             }
         }
         
@@ -686,6 +695,15 @@ namespace VRCFaceTracking.Strings {
         public static string Settings_AboutDescription_Text {
             get {
                 return ResourceManager.GetString("Settings_AboutDescription_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VRChat OSC App to allow AV3 Avatars to interact with eye and lip tracking runtimes.
+        /// </summary>
+        public static string Settings_About_Text {
+            get {
+                return ResourceManager.GetString("Settings_About_Text", resourceCulture);
             }
         }
         
@@ -731,24 +749,6 @@ namespace VRCFaceTracking.Strings {
         public static string Settings_Theme_Text {
             get {
                 return ResourceManager.GetString("Settings_Theme_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Privacy Statement.
-        /// </summary>
-        public static string SettingsPage_PrivacyTermsLink_Content {
-            get {
-                return ResourceManager.GetString("SettingsPage_PrivacyTermsLink_Content", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to https://github.com/benaclejames/VRCFaceTracking.
-        /// </summary>
-        public static string SettingsPage_PrivacyTermsLink_NavigateUri {
-            get {
-                return ResourceManager.GetString("SettingsPage_PrivacyTermsLink_NavigateUri", resourceCulture);
             }
         }
         
