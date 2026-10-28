@@ -1,0 +1,102 @@
+name: Build & Release
+
+# - Push a tag "v*" (e.g. v6.0.0, v6.1.0-beta1) -> builds all platforms and creates a GitHub release
+# - workflow_dispatch -> builds all platforms, uploads artifacts (no release)
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+jobs:
+  build:
+    name: Build ${{ matrix.rid }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: win-x64
+            os: windows-latest
+            package: zip
+          - rid: linux-x64
+            os: ubuntu-latest
+            package: targz
+          - rid: linux-arm64
+            os: ubuntu-latest
+            package: targz
+          - rid: osx-x64
+            os: macos-latest
+            package: targz
+          - rid: osx-arm64
+            os: macos-latest
+            package: targz
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Compute version string
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF_NAME//\//-}" >> $GITHUB_ENV
+
+      - name: Publish VRCFaceTracking
+        run: dotnet publish VRCFaceTracking/VRCFaceTracking.csproj -c Release -r ${{ matrix.rid }} --self-contained true -o publish
+
+      - name: Publish VRCFaceTracking.ModuleProcess
+        run: dotnet publish VRCFaceTracking.ModuleProcess/VRCFaceTracking.ModuleProcess.csproj -c Release -r ${{ matrix.rid }} --self-contained true -o publish
+
+      - name: Fix executable permissions
+        if: runner.os != 'Windows'
+        run: |
+          chmod +x publish/VRCFaceTracking
+          chmod +x publish/VRCFaceTracking.ModuleProcess
+
+      - name: Package (zip)
+        if: matrix.package == 'zip'
+        shell: pwsh
+        run: Compress-Archive -Path publish/* -DestinationPath "VRCFaceTracking-${{ env.VERSION }}-${{ matrix.rid }}.zip"
+
+      - name: Package (tar.gz)
+        if: matrix.package == 'targz'
+        shell: bash
+        run: tar -czf "VRCFaceTracking-${{ env.VERSION }}-${{ matrix.rid }}.tar.gz" -C publish .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VRCFaceTracking-${{ env.VERSION }}-${{ matrix.rid }}
+          path: VRCFaceTracking-*
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: Create release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: 'VRCFaceTracking-*'
+          merge-multiple: true
+          path: dist
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          generate_release_notes: true
