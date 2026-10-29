@@ -19,6 +19,8 @@ jobs:
   build:
     name: Build ${{ matrix.rid }}
     runs-on: ${{ matrix.os }}
+    # macOS free-tier runners are frequently queued/cancelled; never let them block a release
+    continue-on-error: ${{ startsWith(matrix.rid, 'osx-') }}
     strategy:
       fail-fast: false
       matrix:
@@ -31,9 +33,6 @@ jobs:
             package: targz
           - rid: linux-arm64
             os: ubuntu-latest
-            package: targz
-          - rid: osx-x64
-            os: macos-latest
             package: targz
           - rid: osx-arm64
             os: macos-latest
