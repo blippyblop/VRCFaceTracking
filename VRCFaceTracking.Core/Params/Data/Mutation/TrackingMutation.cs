@@ -17,7 +17,8 @@ public enum MutationPriority
 {
     Preprocessor, 
     None,
-    Postprocessor 
+    Postprocessor,
+    PostprocessorFinal
 }
 
 public abstract partial class TrackingMutation
