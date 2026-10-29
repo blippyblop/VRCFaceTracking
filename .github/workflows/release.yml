@@ -19,8 +19,6 @@ jobs:
   build:
     name: Build ${{ matrix.rid }}
     runs-on: ${{ matrix.os }}
-    # macOS free-tier runners are frequently queued/cancelled; never let them block a release
-    continue-on-error: ${{ startsWith(matrix.rid, 'osx-') }}
     strategy:
       fail-fast: false
       matrix:
@@ -34,9 +32,9 @@ jobs:
           - rid: linux-arm64
             os: ubuntu-latest
             package: targz
-          - rid: osx-arm64
-            os: macos-latest
-            package: targz
+          # macOS legs removed: free-plan macOS runners bill at 10x and were
+          # cancelled for capacity after queue timeouts, blocking releases.
+          # To re-enable, add: { rid: osx-arm64, os: macos-latest, package: targz }
 
     steps:
       - uses: actions/checkout@v4
