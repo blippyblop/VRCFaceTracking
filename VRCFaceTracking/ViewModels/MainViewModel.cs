@@ -5,12 +5,19 @@ using VRCFaceTracking.Contracts;
 using VRCFaceTracking.Core.Contracts;
 using VRCFaceTracking.Core.Contracts.Services;
 using VRCFaceTracking.Core.OSC;
+using VRCFaceTracking.Core.Params.Data;
+using VRCFaceTracking.Core.Params.Data.Mutation;
 using VRCFaceTracking.Core.Services;
 
 namespace VRCFaceTracking.ViewModels;
 
 public partial class MainViewModel : ObservableRecipient
 {
+    /// <summary>
+    /// The Jerry-style exaggeration mutation, if present. Exposed for the home menu quick toggle.
+    /// </summary>
+    public Exaggeration? Exaggeration { get; }
+
     public ILibManager LibManager { get; }
     public OscQueryService ParameterOutputService { get; }
     public OscRecvService OscRecvService { get; }
@@ -36,7 +43,8 @@ public partial class MainViewModel : ObservableRecipient
         IModuleDataService moduleDataService,
         IOscTarget oscTarget,
         OscRecvService oscRecvService,
-        OscSendService oscSendService
+        OscSendService oscSendService,
+        UnifiedTrackingMutator trackingMutator
         )
     {
         //Services
@@ -46,6 +54,7 @@ public partial class MainViewModel : ObservableRecipient
         OscRecvService = oscRecvService;
         OscSendService = oscSendService;
         _moduleDataService = moduleDataService;
+        Exaggeration = trackingMutator._mutations.OfType<Exaggeration>().FirstOrDefault();
         
         // Message Timer
         OscRecvService.OnMessageReceived += MessageReceived;

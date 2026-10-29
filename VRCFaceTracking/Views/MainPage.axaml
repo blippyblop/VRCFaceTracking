@@ -160,6 +160,33 @@
                 </Grid>
             </Border>
 
+            <Border CornerRadius="6" BorderThickness="1" Padding="16,12" Background="{DynamicResource ControlFillColorDefaultBrush}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+                        <ui:SymbolIcon Symbol="StarEmphasis" FontSize="24" VerticalAlignment="Center" />
+                        <StackPanel Spacing="3" VerticalAlignment="Center">
+                            <TextBlock FontWeight="SemiBold" FontSize="14" Text="Expression Exaggeration" />
+                            <TextBlock FontSize="12" Opacity="0.7" MaxWidth="460" HorizontalAlignment="Left" TextWrapping="Wrap"
+                                       Text="Jerry-template style gain: boosts expression strength by 1.25x and clamps, so expressions read stronger. Tune the master and per-region gains (Face, Brow, Eyes, Lids) under Tracking Settings."
+                                       ToolTip.Tip="Reproduces the gain stage of Jerry's VRCFaceTracking templates inside the app. Works with every output mode, native blob included." />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <ToggleSwitch
+                        Grid.Column="2"
+                        IsChecked="{Binding Exaggeration.IsActive, Mode=TwoWay}"
+                        OffContent=""
+                        OnContent=""
+                        VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
             <Border CornerRadius="6" BorderThickness="1" Padding="16,14" Background="{DynamicResource ControlFillColorDefaultBrush}">
                 <Grid>
                     <Grid.ColumnDefinitions>
