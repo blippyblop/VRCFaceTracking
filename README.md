@@ -1,3 +1,10 @@
+# What is this fork?
+
+I forked the main line code in order to debug the new native VRCFT stuff. Turns out the main code does actually send the right data, but for some reason it didn't when I tried? or something? 
+
+Either way this actually has some improvements since it tells you when you're using native FT and it has debugging information to show your parameters being sent properly (since the ingame debugging doesn't show anything).
+
+
 # 👀 VRCFaceTracking
 
 Provides eye tracking and lip tracking in VRChat by providing a bridge between your tracking hardware and VRChat's OSC server.
