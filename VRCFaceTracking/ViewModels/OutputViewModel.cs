@@ -132,7 +132,7 @@ public partial class OutputViewModel : ObservableRecipient
                 7 => ToByte(-l.y),
                 8 => ToByte(1f - eye.Right.Openness),
                 9 => ToByte(1f - eye.Left.Openness),
-                >= 10 and <= 13 => (byte)0, // pupil dilation / constriction - not provided by VRCFT
+                >= 10 and <= 13 => PupilWeight(i == 10 || i == 12 ? eye.Right.PupilDiameter_MM : eye.Left.PupilDiameter_MM, i >= 12),
                 _ => (byte)(Math.Clamp(UnifiedTracking.Data.Shapes[i - 14].Weight, 0f, 1f) * 255)
             };
         }
@@ -147,4 +147,11 @@ public partial class OutputViewModel : ObservableRecipient
     }
 
     private static byte ToByte(float v) => (byte)(Math.Clamp(v, 0f, 1f) * 255);
+
+    // Mirrors UnifiedData.GetPupilWeight: 5mm = neutral, +-1 at 0mm/10mm; invalid/absent = neutral.
+    private static byte PupilWeight(float diameterMm, bool constrict)
+    {
+        var w = float.IsFinite(diameterMm) && diameterMm > 0f ? Math.Clamp(diameterMm / 5f - 1f, -1f, 1f) : 0f;
+        return ToByte(constrict ? -w : w);
+    }
 }
