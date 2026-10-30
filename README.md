@@ -2,7 +2,19 @@
 
 I forked the main line code in order to debug the new native VRCFT stuff. Turns out the main code does actually send the right data, but for some reason it didn't when I tried? or something? 
 
-Either way this actually has some improvements since it tells you when you're using native FT and it has debugging information to show your parameters being sent properly (since the ingame debugging doesn't show anything).
+Stuff added:
+
+- VRC Native FT Param debug
+- An actual indicator if you're sending native FT data or the usual (Jerry's compatible) data
+- Jerry's style processing for native FT.
+
+## Jerry's style?
+
+Yeah- The prefab does a load of processing to the raw OSC data before turning it into blendshape data. VRCFT native does.. no processing I think. OSC info is sent right into blendshapes. 
+
+This fork takes all of what jerry's prefab does and modifies the osc data before sending it to VRC, where previously it was modified in VRC using the animator controller logic. Yeah.
+
+Does it work? This is still in testing. My experience with native FT so far has been pretty bad but this might be me ruining it up more than anything else.
 
 
 # 👀 VRCFaceTracking
