@@ -108,9 +108,16 @@ public partial class OutputViewModel : ObservableRecipient
     [ObservableProperty] private string _nativeStatus = "—";
     [ObservableProperty] private string _diagnosticHint = string.Empty;
 
+    // Latest post-mutation stream snapshot (set from UnifiedTracking.OnUnifiedDataUpdated
+    // by the page; the mutator reuses its buffer in place, so just keep the reference).
+    private UnifiedTrackingData? _snapshot;
+
+    public void SetSnapshot(UnifiedTrackingData snapshot) => _snapshot = snapshot;
+
     public void UpdateDebugSnapshot()
     {
-        var eye = UnifiedTracking.Data.Eye;
+        var data = _snapshot ?? UnifiedTracking.Data;
+        var eye = data.Eye;
         var l = eye.Left.Gaze;
         var r = eye.Right.Gaze;
 
@@ -133,7 +140,7 @@ public partial class OutputViewModel : ObservableRecipient
                 8 => ToByte(1f - eye.Right.Openness),
                 9 => ToByte(1f - eye.Left.Openness),
                 >= 10 and <= 13 => PupilWeight(i == 10 || i == 12 ? eye.Right.PupilDiameter_MM : eye.Left.PupilDiameter_MM, i >= 12),
-                _ => (byte)(Math.Clamp(UnifiedTracking.Data.Shapes[i - 14].Weight, 0f, 1f) * 255)
+                _ => (byte)(Math.Clamp(data.Shapes[i - 14].Weight, 0f, 1f) * 255)
             };
         }
 

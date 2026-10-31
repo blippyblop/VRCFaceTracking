@@ -29,6 +29,17 @@ public class ParameterSenderService
     {
         get; set;
     }
+
+    /// <summary>
+    /// True while the native /tracking/face/v1 blob stream is actually engaged (avatar reports full
+    /// face tracking, or the user forced native mode). Mutations that exist for native-stream parity
+    /// (e.g. Expression Exaggeration) must gate on this so the individual-parameter output path
+    /// stays bit-identical to upstream.
+    /// </summary>
+    public static bool NativeStreamingActive
+    {
+        get; set;
+    }
     public bool AllParametersRelevant
     {
         get => AllParametersRelevantStatic;

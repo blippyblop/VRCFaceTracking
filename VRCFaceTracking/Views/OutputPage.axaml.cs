@@ -43,15 +43,22 @@ public partial class OutputPage : UserControl
         _debugTimer.Start();
     }
 
+    private void OnUnifiedDataUpdated(Core.Params.Data.UnifiedTrackingData data)
+    {
+        ViewModel.SetSnapshot(data);
+    }
+
     protected override void OnAttachedToVisualTree(Avalonia.VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        UnifiedTracking.OnUnifiedDataUpdated += OnUnifiedDataUpdated;
         _debugTimer.Start();
     }
 
     protected override void OnDetachedFromVisualTree(Avalonia.VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        UnifiedTracking.OnUnifiedDataUpdated -= OnUnifiedDataUpdated;
         _debugTimer.Stop();
     }
 

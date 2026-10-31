@@ -174,7 +174,7 @@
                             <TextBlock FontWeight="SemiBold" FontSize="14" Text="Expression Exaggeration" />
                             <TextBlock FontSize="12" Opacity="0.7" MaxWidth="460" HorizontalAlignment="Left" TextWrapping="Wrap"
                                        Text="Jerry-template style gain: boosts expression strength by 1.25x and clamps, so expressions read stronger. Tune the master and per-region gains (Face, Brow, Eyes, Lids) under Tracking Settings."
-                                       ToolTip.Tip="Reproduces the gain stage of Jerry's VRCFaceTracking templates inside the app. Works with every output mode, native blob included." />
+                                       ToolTip.Tip="Reproduces the gain stage of Jerry's VRCFaceTracking templates inside the app. Applies to the native face tracking stream (/tracking/face/v1) only; individual-parameter output for legacy/Jerry-prefab avatars is never modified." />
                         </StackPanel>
                     </StackPanel>
 

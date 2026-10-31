@@ -52,6 +52,7 @@ public class BinaryFaceDataSender(
     {
         var isAlreadySubscribed = UnifiedTracking.OnUnifiedDataUpdated.GetInvocationList().Any(x => x.Target == this);
         var shouldBeSubscribed = NativeModeActive;
+        ParameterSenderService.NativeStreamingActive = shouldBeSubscribed;
 
         if (shouldBeSubscribed && !isAlreadySubscribed)
         {

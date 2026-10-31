@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using VRCFaceTracking.Core.Params.Expressions;
+using VRCFaceTracking.Core.Services;
 
 namespace VRCFaceTracking.Core.Params.Data.Mutation;
 
@@ -88,6 +89,15 @@ public class Exaggeration : TrackingMutation
 
     public override void MutateData(ref UnifiedTrackingData data)
     {
+        // This mutation exists to shape the NATIVE /tracking/face/v1 output stream. The
+        // individual-parameter output path (legacy / v2 OSC avatars, e.g. Jerry's prefab)
+        // must remain bit-identical to upstream, so do nothing unless the native stream
+        // is actually engaged.
+        if (!ParameterSenderService.NativeStreamingActive)
+        {
+            return;
+        }
+
         var shapes = data.Shapes;
 
         if (_smoothedShapes.Length != shapes.Length)
